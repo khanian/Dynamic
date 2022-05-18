@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.security.dynamic.web.dto.HelloResponseDtoTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-05-18T03:04:26" hostname="KANGHOONui-MacBookPro.local" time="0.002">
+<testsuite name="com.security.dynamic.web.dto.HelloResponseDtoTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-05-18T12:15:21" hostname="KANGHOONui-MacBookPro.local" time="0.002">
   <properties/>
   <testcase name="test_lombok()" classname="com.security.dynamic.web.dto.HelloResponseDtoTest" time="0.002"/>
   <system-out><![CDATA[]]></system-out>
