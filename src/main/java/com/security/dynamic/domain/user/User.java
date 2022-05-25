@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -29,12 +30,16 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private Role role;
 
+    @Column
+    private String password;
+
     @Builder
-    public User(String name, String email, String picture, Role role) {
+    public User(String name, String email, String picture, Role role, String password) {
         this.name = name;
         this.email = email;
         this.picture = picture;
         this.role = role;
+        this.password = password;
     }
 
     public User update(String name, String picture) {
@@ -47,5 +52,7 @@ public class User extends BaseTimeEntity {
     public String getRoleKey() {
         return this.role.getKey();
     }
+
+    public LocalDateTime getModifiedDate() {return this.getModifiedDate();}
 
 }

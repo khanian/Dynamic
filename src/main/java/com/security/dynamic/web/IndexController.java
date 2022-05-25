@@ -31,6 +31,11 @@ public class IndexController {
         return "index";
     }
 
+    @GetMapping("/signup")
+    public String signUpForm() {
+        return "signup";
+    }
+
     @GetMapping("/posts/save")
     public String postsSave() {
         return "posts-save";
