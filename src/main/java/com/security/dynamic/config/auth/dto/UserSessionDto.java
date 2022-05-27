@@ -6,14 +6,18 @@ import lombok.Getter;
 import java.io.Serializable;
 
 @Getter
-public class SessionUser implements Serializable {
-    private String name;
+public class UserSessionDto implements Serializable {
+    private String username;
     private String email;
     private String picture;
+    private String role;
 
-    public SessionUser(User user){
-        this.name = user.getName();
+    /* Entity -> Dto */
+    public UserSessionDto(User user){
+        this.username = user.getUsername();
         this.email = user.getEmail();
         this.picture = user.getPicture();
+        this.role = user.getRoleKey();
     }
+
 }

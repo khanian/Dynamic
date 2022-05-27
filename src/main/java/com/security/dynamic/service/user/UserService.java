@@ -1,6 +1,6 @@
 package com.security.dynamic.service.user;
 
-import com.security.dynamic.config.auth.dto.MyUserDetail;
+import com.security.dynamic.config.auth.CustomUserDetailsService;
 import com.security.dynamic.domain.user.Role;
 import com.security.dynamic.domain.user.User;
 import com.security.dynamic.domain.user.UserRepository;
@@ -8,58 +8,58 @@ import com.security.dynamic.web.dto.SignupRequestDto;
 import com.security.dynamic.web.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
-@RequiredArgsConstructor
 @Slf4j
-public class UserService implements UserDetailsService {
-    /*
-     * Autowired, Bean Injection
-     * user repository to CRUD user
-     * password encoder to encode password
-     * */
+@RequiredArgsConstructor
+@Service
+public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    /*
-     * Controller should not know SignUpDto to User method
-     * Controller should not directly Connect to Repository
-     *
-     * */
+    //private final HttpSession httpSession;
 
     private User createNewUser(SignupRequestDto signupRequestDto) {
-        return User.builder().name(signupRequestDto.getName())
+        log.debug("###############createNewUser");
+        return User.builder().username(signupRequestDto.getUsername())
                 .email(signupRequestDto.getEmail())
                 .password(passwordEncoder.encode(signupRequestDto.getPassword()))
                 .role(Role.USER).build();
     }
 
     private User saveUserToRepo(User user) {
+        log.debug("+++++++++saveUserToRepo start");
         return userRepository.save(user);
     }
+
+    /*private void validateDuplicate(User user) {
+        Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
+        optionalUser.ifPresent(findUser -> {
+            throw new RuntimeException();
+        });
+    }*/
 
     /*
      * Public method
      *
      * */
     public UserResponseDto userSignup(SignupRequestDto signupRequestDto) {
+        log.info("--------userSignup start--------singupRequestDto ; {}", signupRequestDto.toString());
         User user = createNewUser(signupRequestDto);
+        log.info("--------createNewUser--------user; {}", user.toString());
         user = saveUserToRepo(user);
+        log.info("--------createNewUser--------user.getUsername ; {}", user.getUsername());
+        customUserDetailsService.loadUserByUsername(user.getEmail());
+        log.info("--------createNewUser--------user.getEmail ; {}", user.getEmail());
         return new UserResponseDto(user);
     }
 
@@ -96,11 +96,14 @@ public class UserService implements UserDetailsService {
         return findUserDetailsByPage(pageable);
     }
 
-    @Override
+    /* username이 DB에 있는지 확인 */
+    /*@Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.info(email);
-        //여기서 받은 유저 패스워드와 비교하여 로그인 인증
-        User user = userRepository.findUserByEmail(email);
-        return new MyUserDetail(user);
-    }
+        log.info("+++++++++loadUserByUsername start");
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UsernameNotFoundException("해당 사용자가 존재하지 않습니다. : " + email));
+        httpSession.setAttribute("user", new UserSessionDto(user));
+        *//* 시큐리티 세션에 유저 정보 저장 *//*
+        return new CustomUserDetails(Optional.of(user));
+    }*/
 }

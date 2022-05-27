@@ -1,7 +1,6 @@
 package com.security.dynamic.web;
 
-import com.security.dynamic.config.auth.LoginUser;
-import com.security.dynamic.config.auth.dto.SessionUser;
+import com.security.dynamic.config.auth.dto.UserSessionDto;
 import com.security.dynamic.service.posts.PostsService;
 import com.security.dynamic.web.dto.PostsResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +18,18 @@ public class IndexController {
     private final HttpSession httpSession;
 
     @GetMapping("/")
-    public String index(Model model, @LoginUser SessionUser user) {
+    public String index(Model model
+            //, @LoginUser UserSessionDto user
+    ) {
         model.addAttribute("posts", postsService.findAllDesc());
 
         // @LoginUser annotation 추가 이전 소스
         //SessionUser user = (SessionUser) httpSession.getAttribute("user");
 
-        if (user != null) {
-            model.addAttribute("userName", user.getName());
+        UserSessionDto userSessionDto = (UserSessionDto) httpSession.getAttribute("user");
+
+        if (userSessionDto != null) {
+            model.addAttribute("username", userSessionDto.getUsername());
         }
         return "index";
     }

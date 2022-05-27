@@ -4,13 +4,14 @@ import com.security.dynamic.service.user.UserService;
 import com.security.dynamic.web.dto.SignupRequestDto;
 import com.security.dynamic.web.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class UserApiController {
@@ -18,6 +19,7 @@ public class UserApiController {
 
     @PostMapping(value = "/signup")
     public UserResponseDto SignUp(@RequestBody SignupRequestDto signupRequestDto) {
+        log.info("controller signup start---------");
         return userService.userSignup(signupRequestDto);
     }
 

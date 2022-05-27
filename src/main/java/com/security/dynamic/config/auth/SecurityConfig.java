@@ -2,15 +2,23 @@ package com.security.dynamic.config.auth;
 
 import com.security.dynamic.domain.user.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
+@Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
     private final CustomOAuth2UserService customOAuth2UserService;
+
+    private final CustomUserDetailsService customUserDetailsService;
+
 
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -23,15 +31,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/userAccess").hasRole(Role.USER.name())
                     .antMatchers("/signup", "/login").anonymous()
                     .anyRequest().authenticated()
-                .and()
-                    .formLogin()
+                //.and()
+                    //.formLogin()
+                    //.defaultSuccessUrl("/")
                 .and()
                     .logout()
-                        .logoutSuccessUrl("/")
+                    .logoutSuccessUrl("/")
+                    //.invalidateHttpSession(true)
                 .and()
                     .oauth2Login()
-                        .userInfoEndpoint()
-                            .userService(customOAuth2UserService);
+                    .userInfoEndpoint()
+                    .userService(customOAuth2UserService);
 
     }
 
@@ -40,9 +50,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * @param auth
      * @throws Exception
      */
-    /*@Override
+    @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(UserService).passwordEncoder(new BCryptPasswordEncoder());
+        auth.userDetailsService(customUserDetailsService).passwordEncoder(new BCryptPasswordEncoder());
+    }
+    /*@Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(customOAuth2UserService).passwordEncoder(encoder());
     }*/
 
 }

@@ -12,6 +12,10 @@ var main = {
         $('#btn-delete').on('click', function () {
             _this.delete();
         });
+
+        $('#btn-signup').on('click', function () {
+            _this.signup();
+        });
     },
     save : function () {
         var data = {
@@ -64,6 +68,27 @@ var main = {
             contentType:'application/json; charset=utf-8'
         }).done(function() {
             alert(id + '번 글이 삭제되었습니다.');
+            window.location.href = '/';
+        }).fail(function (error) {
+            alert(JSON.stringify(error));
+        });
+    },
+    signup : function () {
+        var data = {
+            email: $('#inputEmail').val(),
+            username: $('#inputName').val(),
+            password: $('#inputPassword').val()
+        };
+        alert("data=" + JSON.stringify(data));
+
+        $.ajax({
+            type: 'POST',
+            url: '/signup',
+            dataType: 'json',
+            contentType:'application/json; charset=utf-8',
+            data: JSON.stringify(data)
+        }).done(function() {
+            alert('회원 등록되었습니다.');
             window.location.href = '/';
         }).fail(function (error) {
             alert(JSON.stringify(error));
