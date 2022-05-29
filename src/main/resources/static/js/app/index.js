@@ -12,14 +12,6 @@ var main = {
         $('#btn-delete').on('click', function () {
             _this.delete();
         });
-
-        /*$('#btn-signup').on('click', function () {
-            _this.signup();
-        });*/
-
-        /*$('#btn-login').on('click', function () {
-            _this.login();
-        });*/
     },
     save : function () {
         var data = {
@@ -76,49 +68,7 @@ var main = {
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });
-    },
-    signup : function () {
-        var data = {
-            email: $('#inputEmail').val(),
-            username: $('#inputName').val(),
-            password: $('#inputPassword').val()
-        };
-        alert("data=" + JSON.stringify(data));
-
-        $.ajax({
-            type: 'POST',
-            url: '/signup',
-            dataType: 'json',
-            contentType:'application/json; charset=utf-8',
-            data: JSON.stringify(data)
-        }).done(function() {
-            alert('회원 등록되었습니다.');
-            window.location.href = '/';
-        }).fail(function (error) {
-            alert(JSON.stringify(error));
-        });
-    },
-    login : function () {
-        var data = {
-            email: $('#loginEmail').val(),
-            password: $('#loginPassword').val()
-        };
-        alert("data=" + JSON.stringify(data));
-
-        $.ajax({
-            type: 'POST',
-            url: '/loginProc',
-            dataType: 'json',
-            contentType:'application/json; charset=utf-8',
-            data: JSON.stringify(data)
-        }).done(function() {
-            alert('로그인 되었습니다.');
-            window.location.href = '/';
-        }).fail(function (error) {
-            alert(JSON.stringify(error));
-        });
     }
-
 };
 
 main.init();

@@ -1,5 +1,6 @@
 package com.security.dynamic.config.auth.dto;
 
+import com.security.dynamic.domain.user.Role;
 import com.security.dynamic.domain.user.User;
 import lombok.Getter;
 
@@ -10,7 +11,7 @@ public class UserSessionDto implements Serializable {
     private final String username;
     private final String email;
     private final String picture;
-    private final String role;
+    private final Role role;
     private final String password;
 
     /* Entity -> Dto */
@@ -19,7 +20,7 @@ public class UserSessionDto implements Serializable {
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.picture = user.getPicture();
-        this.role = user.getRoleKey();
+        this.role = user.getRole();
     }
 
 }
