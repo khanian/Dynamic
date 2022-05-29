@@ -7,15 +7,17 @@ import java.io.Serializable;
 
 @Getter
 public class UserSessionDto implements Serializable {
-    private String username;
-    private String email;
-    private String picture;
-    private String role;
+    private final String username;
+    private final String email;
+    private final String picture;
+    private final String role;
+    private final String password;
 
     /* Entity -> Dto */
     public UserSessionDto(User user){
         this.username = user.getUsername();
         this.email = user.getEmail();
+        this.password = user.getPassword();
         this.picture = user.getPicture();
         this.role = user.getRoleKey();
     }

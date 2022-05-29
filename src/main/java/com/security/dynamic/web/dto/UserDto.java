@@ -1,27 +1,28 @@
 package com.security.dynamic.web.dto;
 
+import com.security.dynamic.domain.user.Role;
 import com.security.dynamic.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserResponseDto {
+public class UserDto {
     private String username;
     private String password;
     private String email;
     private String picture;
-    private String role;
+    //private String role;
 
-    public UserResponseDto(User user) {
+    public UserDto(User user) {
     }
 
     /* DTO -> Entity */
-    /*public User toEntity() {
+    public User toEntity() {
         User user = User.builder()
                 .username(username)
                 .password(password)
@@ -30,6 +31,6 @@ public class UserResponseDto {
                 .role(Role.USER)
                 .build();
         return user;
-    }*/
+    }
 
 }

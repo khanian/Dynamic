@@ -1,83 +1,34 @@
 package com.security.dynamic.config.auth.dto;
 
-import com.security.dynamic.domain.user.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
 /** 스프링 시큐리티가 로그인 요청을 가로채 로그인을 진행하고 완료 되면 UserDetails 타입의 오브젝트를
  * 스프링 시큐리티의 고유한 세션저장소에 저장 해준다.
  */
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
-
-    private final Optional<User> user;
-
-   /* AllArgsConstructor 가 만들어 줌.
-    private String email;
-    private String password;
-    private String role;
-    public MyUserDetail(Optional<User> user) {
-        this.email = user.getEmail();
-        this.password = user.getPassword();
-        this.role = "ROLE_" + user.getRole();
-    }*/
-
+    private final UserSessionDto user;
     @Override
-    public String getPassword() { return user.get().getPassword(); }
-
+    public String getPassword() { return user.getPassword(); }
     @Override
-    public String getUsername() { return user.get().getEmail(); }
-
-    /* 계정 만료 여부
-    * true : 만료 안됨
-    * false : 만료
-    */
+    public String getUsername() { return user.getUsername(); }
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    /* 계정 잠김 여부
-    * true : 잠기지 않음
-    * false : 잠김
-    */
+    public boolean isAccountNonExpired() { return true; }
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-    /* 비밀번호 만료 여부
-    * true : 만료 안됨
-    * false : 만료
-    */
+    public boolean isAccountNonLocked() { return true; }
     @Override
     public boolean isCredentialsNonExpired() { return true; }
-
-    /* 사용자 활성화 여부
-     * true : 만료 안됨
-     * false : 만료
-     */
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    /* 유저의 권한 목록 */
+    public boolean isEnabled()  { return true; }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collectors = new ArrayList<>();
-        collectors.add(() -> "ROLE_"+user.get().getRole());
+        collectors.add(() -> "ROLE_"+user.getRole());
         return collectors;
     }
-/*
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(this.role));
-    }
-*/
-
 }

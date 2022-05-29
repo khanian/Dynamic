@@ -2,6 +2,7 @@ package com.security.dynamic.config.auth;
 
 import com.security.dynamic.domain.user.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -15,10 +16,25 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
     private final CustomOAuth2UserService customOAuth2UserService;
 
     private final CustomUserDetailsService customUserDetailsService;
 
+    /*@Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }*/
+
+    @Bean
+    public BCryptPasswordEncoder encoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(customUserDetailsService).passwordEncoder(encoder());
+    }
 
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -28,35 +44,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .authorizeRequests()
                     .antMatchers("/", "/css", "images/**", "/js/**", "/h2-console/**").permitAll()
                     .antMatchers("/api/v1/**").hasRole(Role.USER.name())
-                    .antMatchers("/userAccess").hasRole(Role.USER.name())
-                    .antMatchers("/signup", "/login").anonymous()
+                    //.antMatchers("/userAccess").hasRole(Role.USER.name())
+                    .antMatchers("/signup", "/user/login").anonymous()
                     .anyRequest().authenticated()
-                //.and()
-                    //.formLogin()
-                    //.defaultSuccessUrl("/")
+                .and().formLogin()
+                //    .loginPage("/user/login")
+                //    .loginProcessingUrl("/loginProc")
+                //    .defaultSuccessUrl("/")
                 .and()
                     .logout()
                     .logoutSuccessUrl("/")
-                    //.invalidateHttpSession(true)
+                    .invalidateHttpSession(true)
                 .and()
                     .oauth2Login()
                     .userInfoEndpoint()
                     .userService(customOAuth2UserService);
 
     }
-
-    /**
-     * 로그인 인증 처리 메소드
-     * @param auth
-     * @throws Exception
-     */
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(customUserDetailsService).passwordEncoder(new BCryptPasswordEncoder());
-    }
-    /*@Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(customOAuth2UserService).passwordEncoder(encoder());
-    }*/
 
 }

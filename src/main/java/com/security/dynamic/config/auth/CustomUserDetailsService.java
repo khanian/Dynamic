@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -23,13 +22,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     /* username이 DB에 있는지 확인 */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.debug("+++++++++loadUserByUsername start");
+        log.debug("$$loadUserByUsername start$$");
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new UsernameNotFoundException("해당 사용자가 존재하지 않습니다. : " + email));
+        log.debug("user.getPassword = {}", user.getPassword());
+        //세션 생성
         httpSession.setAttribute("user", new UserSessionDto(user));
+        // 세션 로그
         UserSessionDto userSessionDto = (UserSessionDto) httpSession.getAttribute("user");
-        log.info("::::::::userSessionDto.getusername = {}", userSessionDto.getUsername());
+        log.debug("$$userSessionDto.getUsername ::::::: {}", userSessionDto.getUsername());
         /* 시큐리티 세션에 유저 정보 저장 */
-        return new CustomUserDetails(Optional.of(user));
+        return new CustomUserDetails(userSessionDto);
     }
 }
