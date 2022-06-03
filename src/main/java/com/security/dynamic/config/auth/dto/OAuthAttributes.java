@@ -63,7 +63,7 @@ public class OAuthAttributes {
                 .username(username)
                 .email(email)
                 .picture(picture)
-                .role(Role.USER)
+                .role(Role.GUEST)
                 .build();
     }
 
