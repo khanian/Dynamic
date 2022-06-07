@@ -22,6 +22,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Transactional
+    public Long userSignUp(UserDto userDto) {
+        userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+        log.debug("encrypt password :: {}", bCryptPasswordEncoder.encode(userDto.getPassword()));
+        return userRepository.save(userDto.toEntity()).getId();
+    }
+
     //private final HttpSession httpSession;
 
     /*private User createNewUser(UserDto userDto ) {
@@ -59,12 +66,6 @@ public class UserService {
 //        return new UserDto(user);
 //    }
 
-    @Transactional
-    public Long userSignUp(UserDto userDto) {
-        userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
-        log.debug("encrypt password :: {}", bCryptPasswordEncoder.encode(userDto.getPassword()));
-        return userRepository.save(userDto.toEntity()).getId();
-    }
 
     /*public void userLogin(UserDto userDto, Authentication authentication) {
         log.debug("email ::::::: {}", userDto.getEmail());
